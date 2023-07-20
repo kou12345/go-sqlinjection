@@ -9,8 +9,6 @@ import (
 )
 
 func main() {
-	fmt.Println("hoge")
-
 	db, err := sql.Open("sqlite3", "./foo.db")
 	if err != nil {
 		log.Fatal(err)
@@ -26,15 +24,25 @@ func main() {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-	var name string
-	err = stmt.QueryRow("2").Scan(&name)
+
+	// rows, err := stmt.Query("2")
+	// database/sqlパッケージがエスケープ処理しているから大丈夫
+	rows, err := stmt.Query("'1' OR '1' = '1'")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(name)
-}
+	defer rows.Close()
 
-// TODO sqlite3
-// TODO create table todo
-// TODO
-// TODO
+	for rows.Next() {
+		name := ""
+		if err := rows.Scan(&name); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(name)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
