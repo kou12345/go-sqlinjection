@@ -28,6 +28,9 @@ func main() {
 	// rows, err := stmt.Query("2")
 	// database/sqlパッケージがエスケープ処理しているから大丈夫
 	rows, err := stmt.Query("'1' OR '1' = '1'")
+
+	// db.Queryはエスケープ処理しないぽい？ 全部取得できた out
+	// rows, err := db.Query(fmt.Sprintf("SELECT name FROM todo WHERE id = %s", "'1' OR '1' = '1'"))
 	if err != nil {
 		log.Fatal(err)
 	}
